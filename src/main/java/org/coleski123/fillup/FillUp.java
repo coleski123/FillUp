@@ -95,7 +95,7 @@ public final class FillUp extends JavaPlugin implements Listener {
                         player.sendMessage(ChatColor.GREEN + "[FillUp] " + ChatColor.YELLOW + "Note: Only " + actualAmount + " of " + amount + " items could fit in the chest.");
                     }
                 } else {
-                    player.sendMessage(ChatColor.GREEN + "[FillUp] " + ChatColor.RED + "The chest does not have enough space for these items. This is my test push GOD DAMNIT");
+                    player.sendMessage(ChatColor.GREEN + "[FillUp] " + ChatColor.RED + "The chest does not have enough space for these items.");
                 }
             } else {
                 player.sendMessage(ChatColor.GREEN + "[FillUp] " + ChatColor.RED + "You must be looking at a chest to use this command.");
