@@ -1,0 +1,13 @@
+name: FillUp
+version: '${project.version}'
+main: org.coleski123.fillup.FillUp
+api-version: '1.20'
+description: A plugin to fill a chest with a specified items
+commands:
+  fillup:
+    description: Fill a chest with a specified item.
+    usage: /fillup <item_name> <amount>
+permissions:
+  fillup.use:
+    description: Allows players to use the /fillup command
+    default: op

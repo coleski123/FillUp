@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="FillUp:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/FillUp_jar</output-path>
+    <root id="archive" name="FillUp.jar">
+      <element id="module-output" name="FillUp" />
+    </root>
+  </artifact>
+</component>
