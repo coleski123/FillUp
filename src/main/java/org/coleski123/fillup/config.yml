@@ -1,0 +1,6 @@
+Messages:
+  Prefix: "&5[FillUp] "
+  Message1: "&6Chest filled with {AMOUNT1} of {ITEM}"
+  Message2: "&6Note: Only {AMOUNT1} of {AMOUNT2} items could fit in the chest."
+  Message3: "&4The chest does not have enough space for these items."
+  Message4: "&4You must be looking at a chest to use this command."

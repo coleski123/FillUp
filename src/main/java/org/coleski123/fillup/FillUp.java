@@ -2,9 +2,11 @@ package org.coleski123.fillup;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +20,20 @@ public final class FillUp extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         getLogger().info("ChestFillPlugin has been enabled!");
+
+        // Ensure the config.yml file exists and load it
+        this.saveDefaultConfig();
+        config = getConfig(); // Load the configuration
+
         getServer().getPluginManager().registerEvents(this, this);
+
+//        new UpdateChecker(this, 109263).getVersion(version -> {
+//            if (this.getDescription().getVersion().equals(version)) {
+//                getLogger().info("No new versions available.");
+//            } else {
+//                getLogger().info("A new version is now available! Download: https://www.spigotmc.org/resources/instasmelt.109263//");
+//            }
+//        });
     }
 
     @Override
@@ -26,14 +41,32 @@ public final class FillUp extends JavaPlugin implements Listener {
         getLogger().info("ChestFillPlugin has been disabled!");
     }
 
+    // Load your plugin's configuration file (assuming your plugin is using Bukkit/Spigot)
+    FileConfiguration config = getConfig(); // This assumes you are in your main plugin class.
+
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        String prefix = config.getString("Messages.Prefix").replace('&', '§');
+
         if (cmd.getName().equalsIgnoreCase("fillup") && sender instanceof Player) {
             Player player = (Player) sender;
 
             // Check if the player has the "fillup.use" permission
             if (!player.hasPermission("fillup.use")) {
                 player.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+                return true;
+            }
+
+            if (args.length == 1 && args[0].equalsIgnoreCase("saveconfig")) {
+                // Handle the "/fillup saveconfig" command here
+                reloadConfig();
+                config = getConfig(); // Get the updated configuration
+                player.sendMessage(ChatColor.GREEN + "Configuration saved.");
+                Sound sound = Sound.ENTITY_PLAYER_LEVELUP;
+                float volume = 0.10f;
+                float pitch = 1.0f;
+                player.playSound(player.getLocation(), sound, volume, pitch);
                 return true;
             }
 
@@ -87,18 +120,43 @@ public final class FillUp extends JavaPlugin implements Listener {
                     // Create the item stack
                     ItemStack itemStack = new ItemStack(material, actualAmount);
 
-                    // Fill the chest with the specified item
+                    String originalAmount = String.valueOf(actualAmount);
+                    String originalAmount2 = String.valueOf(amount);
+                    String message1 = config.getString("Messages.Message1")
+                            .replace("&", "§")
+                            .replace("{ITEM}", material.name().toLowerCase().replace("_", " "))
+                            .replace("{AMOUNT1}", originalAmount);
                     chestInventory.addItem(itemStack);
-                    player.sendMessage(ChatColor.GREEN + "[FillUp] " + ChatColor.YELLOW + "Chest filled with " + actualAmount + " of " + ChatColor.WHITE + material.toString());
+                    player.sendMessage(prefix + message1 );
+                    Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
+                    float volume = 0.10f;
+                    float pitch = 2.0f;
+                    player.playSound(player.getLocation(), sound, volume, pitch);
 
                     if (actualAmount < amount) {
-                        player.sendMessage(ChatColor.GREEN + "[FillUp] " + ChatColor.YELLOW + "Note: Only " + actualAmount + " of " + amount + " items could fit in the chest.");
+                        String message2 = config.getString("Messages.Message2")
+                                .replace("&", "§")
+                                .replace("{AMOUNT1}", originalAmount)
+                                .replace("{AMOUNT2}", originalAmount2);
+                        player.sendMessage(prefix + message2);
                     }
                 } else {
-                    player.sendMessage(ChatColor.GREEN + "[FillUp] " + ChatColor.RED + "The chest does not have enough space for these items.");
+                    String message3 = config.getString("Messages.Message3")
+                            .replace("&", "§");
+                    player.sendMessage(prefix + message3);
+                    Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
+                    float volume = 0.10f;
+                    float pitch = 1.0f;
+                    player.playSound(player.getLocation(), sound, volume, pitch);
                 }
             } else {
-                player.sendMessage(ChatColor.GREEN + "[FillUp] " + ChatColor.RED + "You must be looking at a chest to use this command.");
+                String message4 = config.getString("Messages.Message4")
+                        .replace("&", "§");
+                player.sendMessage(prefix + message4);
+                Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
+                float volume = 0.10f;
+                float pitch = 1.0f;
+                player.playSound(player.getLocation(), sound, volume, pitch);
             }
 
             return true;

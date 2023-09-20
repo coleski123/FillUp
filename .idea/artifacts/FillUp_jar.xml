@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/FillUp_jar</output-path>
     <root id="archive" name="FillUp.jar">
       <element id="module-output" name="FillUp" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/java/org/coleski123/fillup/config.yml" />
     </root>
   </artifact>
 </component>

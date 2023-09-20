@@ -1,5 +1,5 @@
 name: FillUp
-version: '${project.version}'
+version: 0.2
 main: org.coleski123.fillup.FillUp
 api-version: '1.20'
 description: A plugin to fill a chest with a specified items
