@@ -54,7 +54,13 @@ public final class FillUp extends JavaPlugin implements Listener {
 
             // Check if the player has the "fillup.use" permission
             if (!player.hasPermission("fillup.use")) {
-                player.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+                String message5 = config.getString("Messages.Message5")
+                                .replace("&", "§");
+                player.sendMessage(prefix + message5);
+                Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
+                float volume = 0.10f;
+                float pitch = 1.0f;
+                player.playSound(player.getLocation(), sound, volume, pitch);
                 return true;
             }
 
