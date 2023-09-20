@@ -27,13 +27,13 @@ public final class FillUp extends JavaPlugin implements Listener {
 
         getServer().getPluginManager().registerEvents(this, this);
 
-//        new UpdateChecker(this, 109263).getVersion(version -> {
-//            if (this.getDescription().getVersion().equals(version)) {
-//                getLogger().info("No new versions available.");
-//            } else {
-//                getLogger().info("A new version is now available! Download: https://www.spigotmc.org/resources/instasmelt.109263//");
-//            }
-//        });
+        new UpdateChecker(this, 112726).getVersion(version -> {
+            if (this.getDescription().getVersion().equals(version)) {
+                getLogger().info("No new versions available.");
+            } else {
+                getLogger().info("A new version is now available! Download: https://www.spigotmc.org/resources/instasmelt.112726//");
+            }
+        });
     }
 
     @Override
