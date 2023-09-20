@@ -19,7 +19,7 @@ public final class FillUp extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        getLogger().info("ChestFillPlugin has been enabled!");
+        getLogger().info("FillUp has been enabled!");
 
         // Ensure the config.yml file exists and load it
         this.saveDefaultConfig();
@@ -38,7 +38,7 @@ public final class FillUp extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        getLogger().info("ChestFillPlugin has been disabled!");
+        getLogger().info("FillUp has been disabled!");
     }
 
     // Load the plugins configuration
