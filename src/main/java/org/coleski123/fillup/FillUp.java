@@ -41,8 +41,8 @@ public final class FillUp extends JavaPlugin implements Listener {
         getLogger().info("ChestFillPlugin has been disabled!");
     }
 
-    // Load your plugin's configuration file (assuming your plugin is using Bukkit/Spigot)
-    FileConfiguration config = getConfig(); // This assumes you are in your main plugin class.
+    // Load the plugins configuration
+    FileConfiguration config = getConfig();
 
 
     @Override
@@ -94,7 +94,7 @@ public final class FillUp extends JavaPlugin implements Listener {
             }
 
             // Check if the player is looking at a chest
-            Block targetBlock = player.getTargetBlockExact(5); // Change the range as needed
+            Block targetBlock = player.getTargetBlockExact(5);
             if (targetBlock != null && (targetBlock.getType() == Material.CHEST ||
                     targetBlock.getType() == Material.TRAPPED_CHEST ||
                     targetBlock.getType() == Material.CHEST_MINECART ||
@@ -166,7 +166,6 @@ public final class FillUp extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        // You can add more functionality here if needed
     }
 
     // Helper method to calculate available space in an inventory for a specific material
