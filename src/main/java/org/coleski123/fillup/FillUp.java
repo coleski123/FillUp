@@ -1,12 +1,11 @@
 package org.coleski123.fillup;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,8 +13,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public final class FillUp extends JavaPlugin implements Listener {
+    private ContainerHolograms containerHolograms;
 
     @Override
     public void onEnable() {
@@ -26,6 +29,8 @@ public final class FillUp extends JavaPlugin implements Listener {
         config = getConfig(); // Load the configuration
 
         getServer().getPluginManager().registerEvents(this, this);
+        // Initialize the ContainerHolograms instance with the plugin
+        containerHolograms = new ContainerHolograms(this);
 
         new UpdateChecker(this, 112726).getVersion(version -> {
             if (this.getDescription().getVersion().equals(version)) {
@@ -39,6 +44,7 @@ public final class FillUp extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         getLogger().info("FillUp has been disabled!");
+        // Delete all holograms created by this plugin
     }
 
     // Load the plugins configuration
@@ -47,143 +53,164 @@ public final class FillUp extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        String prefix = config.getString("Messages.Prefix").replace('&', '§');
+        String prefix = config.getString("Prefix").replace('&', '§');
+        String message4 = config.getString("ContainerMessages.Message4").replace("&", "§");
+        boolean shouldDisplayChatMessages = config.getBoolean("Options.ChatMessages", true);
 
         if (cmd.getName().equalsIgnoreCase("fillup") && sender instanceof Player) {
             Player player = (Player) sender;
 
             // Check if the player has the "fillup.use" permission
             if (!player.hasPermission("fillup.use")) {
-                String message5 = config.getString("Messages.Message5")
-                                .replace("&", "§");
-                player.sendMessage(prefix + message5);
-                Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
-                float volume = 0.10f;
-                float pitch = 1.0f;
-                player.playSound(player.getLocation(), sound, volume, pitch);
-                return true;
-            }
-
-            if (args.length == 1 && args[0].equalsIgnoreCase("saveconfig")) {
-                // Handle the "/fillup saveconfig" command here
-                reloadConfig();
-                config = getConfig(); // Get the updated configuration
-                player.sendMessage(ChatColor.GREEN + "Configuration saved.");
-                Sound sound = Sound.ENTITY_PLAYER_LEVELUP;
-                float volume = 0.10f;
-                float pitch = 1.0f;
-                player.playSound(player.getLocation(), sound, volume, pitch);
-                return true;
-            }
-
-            // Check if the player specified a valid material and amount
-            if (args.length < 2) {
-                player.sendMessage(ChatColor.RED + "Usage: /fillup <item_name> <amount>");
-                return true;
-            }
-
-            Material material;
-            int amount;
-
-            try {
-                material = Material.valueOf(args[0].toUpperCase()); // Convert the item name to uppercase
-            } catch (IllegalArgumentException e) {
-                player.sendMessage(ChatColor.RED + "Invalid item name.");
-                return true;
-            }
-
-            try {
-                amount = Integer.parseInt(args[1]);
-            } catch (NumberFormatException e) {
-                player.sendMessage(ChatColor.RED + "Invalid amount.");
-                return true;
-            }
-
-            // Check if the player is looking at a chest
-            Block targetBlock = player.getTargetBlockExact(5);
-            if (targetBlock != null && (targetBlock.getType() == Material.CHEST ||
-                    targetBlock.getType() == Material.TRAPPED_CHEST ||
-                    targetBlock.getType() == Material.CHEST_MINECART ||
-                    targetBlock.getType() == Material.FURNACE ||
-                    targetBlock.getType() == Material.FURNACE_MINECART ||
-                    targetBlock.getType() == Material.BLAST_FURNACE ||
-                    targetBlock.getType() == Material.SMOKER ||
-                    targetBlock.getType() == Material.HOPPER ||
-                    targetBlock.getType() == Material.HOPPER_MINECART ||
-                    targetBlock.getType() == Material.DROPPER ||
-                    targetBlock.getType() == Material.DISPENSER ||
-                    targetBlock.getType() == Material.BARREL)) {
-                // Get the chest's inventory
-                Inventory chestInventory = ((org.bukkit.block.Container) targetBlock.getState()).getInventory();
-
-                // Calculate how many items can fit in the chest
-                int availableSpace = calculateAvailableSpace(chestInventory, material);
-
-                if (availableSpace > 0) {
-                    // Calculate the actual amount to fill based on available space
-                    int actualAmount = Math.min(amount, availableSpace);
-
-                    // Create the item stack
-                    ItemStack itemStack = new ItemStack(material, actualAmount);
-
-                    String originalAmount = String.valueOf(actualAmount);
-                    String originalAmount2 = String.valueOf(amount);
-                    String message1 = config.getString("Messages.Message1")
-                            .replace("&", "§")
-                            .replace("{ITEM}", material.name().toLowerCase().replace("_", " "))
-                            .replace("{AMOUNT1}", originalAmount);
-                    chestInventory.addItem(itemStack);
-                    player.sendMessage(prefix + message1 );
-                    Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
-                    float volume = 0.10f;
-                    float pitch = 2.0f;
-                    player.playSound(player.getLocation(), sound, volume, pitch);
-
-                    if (actualAmount < amount) {
-                        String message2 = config.getString("Messages.Message2")
-                                .replace("&", "§")
-                                .replace("{AMOUNT1}", originalAmount)
-                                .replace("{AMOUNT2}", originalAmount2);
-                        player.sendMessage(prefix + message2);
-                    }
-                } else {
-                    String message3 = config.getString("Messages.Message3")
+                    String message5 = config.getString("ChatMessages.Message5")
                             .replace("&", "§");
-                    player.sendMessage(prefix + message3);
+                    player.sendMessage(prefix + message5);
                     Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
                     float volume = 0.10f;
                     float pitch = 1.0f;
                     player.playSound(player.getLocation(), sound, volume, pitch);
+                    return true;
                 }
-            } else {
-                String message4 = config.getString("Messages.Message4")
-                        .replace("&", "§");
-                player.sendMessage(prefix + message4);
-                Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
-                float volume = 0.10f;
-                float pitch = 1.0f;
-                player.playSound(player.getLocation(), sound, volume, pitch);
+
+                if (args.length == 1 && args[0].equalsIgnoreCase("saveconfig")) {
+                    // Handle the "/fillup saveconfig" command here
+                    reloadConfig();
+                    config = getConfig(); // Get the updated configuration
+                    player.sendMessage(ChatColor.GREEN + "Configuration saved.");
+                    Sound sound = Sound.ENTITY_PLAYER_LEVELUP;
+                    float volume = 0.10f;
+                    float pitch = 1.0f;
+                    player.playSound(player.getLocation(), sound, volume, pitch);
+                    return true;
+                }
+
+                // Check if the player specified a valid material and amount
+                if (args.length < 2) {
+                    player.sendMessage(ChatColor.RED + "Usage: /fillup <item_name> <amount>");
+                    return true;
+                }
+
+                Material material;
+                int amount;
+
+                try {
+                    material = Material.valueOf(args[0].toUpperCase()); // Convert the item name to uppercase
+                } catch (IllegalArgumentException e) {
+                    player.sendMessage(ChatColor.RED + "Invalid item name.");
+                    return true;
+                }
+
+                try {
+                    amount = Integer.parseInt(args[1]);
+                } catch (NumberFormatException e) {
+                    player.sendMessage(ChatColor.RED + "Invalid amount.");
+                    return true;
+                }
+
+                Block targetBlock = player.getTargetBlockExact(5);
+                if (targetBlock != null && targetBlock.getState() instanceof org.bukkit.block.Container) {
+                // Get the containers inventory
+                Inventory chestInventory = ((org.bukkit.block.Container) targetBlock.getState()).getInventory();
+
+                    Material blockMaterial = targetBlock.getType();
+                    String ContainerName = blockMaterial.name().toLowerCase().replace("_", " ");
+                    ContainerName = ContainerName.substring(0, 1).toUpperCase() + ContainerName.substring(1);
+
+                    // Calculate how many items can fit in the chest
+                    int availableSpace = calculateAvailableSpace(chestInventory, material);
+
+                    if (availableSpace > 0) {
+                        int actualAmount = Math.min(amount, availableSpace);
+                        String originalAmount = String.valueOf(actualAmount);
+                        // Create the item stack
+                        ItemStack itemStack = new ItemStack(material, actualAmount);
+                        chestInventory.addItem(itemStack);
+                        if (shouldDisplayChatMessages) {
+                            String message1 = config.getString("ChatMessages.Message1")
+                                    .replace("&", "§")
+                                    .replace("{ITEM}", material.name().toLowerCase().replace("_", " "))
+                                    .replace("{AMOUNT1}", originalAmount)
+                                    .replace("{CONTAINERNAME}", ContainerName);
+                            if (actualAmount < amount) {
+                                String originalAmount2 = String.valueOf(amount);
+                                String message2 = config.getString("ChatMessages.Message2")
+                                        .replace("&", "§")
+                                        .replace("{AMOUNT1}", originalAmount)
+                                        .replace("{AMOUNT2}", originalAmount2)
+                                        .replace("{CONTAINERNAME}", ContainerName)
+                                        .replace("{ITEM}", material.name().toLowerCase().replace("_", " "));
+                                player.sendMessage(prefix + message2);
+                            } else {
+                                player.sendMessage(prefix + message1);
+                            }
+                        }
+                        Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
+                        float volume = 0.10f;
+                        float pitch = 2.0f;
+                        player.playSound(player.getLocation(), sound, volume, pitch);
+                        if (actualAmount < amount) {
+                            String originalAmount2 = String.valueOf(amount);
+                            containerHolograms.displayContainerMessage2(player, prefix, originalAmount, originalAmount2, ContainerName, material, targetBlock);
+                        } else {
+                            containerHolograms.displayContainerMessage1(player, prefix, originalAmount, ContainerName, material, targetBlock);
+                        }
+                    } else {
+                        if (shouldDisplayChatMessages) {
+                                String message3 = config.getString("ChatMessages.Message3")
+                                        .replace("&", "§")
+                                        .replace("{CONTAINERNAME}", ContainerName);
+                                player.sendMessage(prefix + message3);
+                                Sound sounds = Sound.BLOCK_NOTE_BLOCK_BIT;
+                                float volumes = 0.10f;
+                                float pitchs = 1.0f;
+                                player.playSound(player.getLocation(), sounds, volumes, pitchs);
+                            }
+                        containerHolograms.displayContainerMessage3(player, prefix, ContainerName, targetBlock);
+                        Sound sounds = Sound.BLOCK_NOTE_BLOCK_BIT;
+                        float volumes = 0.10f;
+                        float pitchs = 1.0f;
+                        player.playSound(player.getLocation(), sounds, volumes, pitchs);
+                    }
+                } else {
+                    if (shouldDisplayChatMessages) {
+                        player.sendMessage(prefix + message4);
+                        Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
+                        float volume = 0.10f;
+                        float pitch = 1.0f;
+                        player.playSound(player.getLocation(), sound, volume, pitch);
+                    } else {
+                        containerHolograms.displayContainerScreenMessage4(player, prefix);
+                    }
+                }
+                return true;
             }
-
-            return true;
+            return false;
         }
-        return false;
-    }
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-    }
+        //Handler to initialize player looking at container
+        @EventHandler
+        public void onPlayerInteract (PlayerInteractEvent event){
+        }
 
-    // Helper method to calculate available space in an inventory for a specific material
-    private int calculateAvailableSpace(Inventory inventory, Material material) {
-        int availableSpace = 0;
-        for (ItemStack stack : inventory.getContents()) {
-            if (stack == null || stack.getType() == Material.AIR) {
-                availableSpace += material.getMaxStackSize();
-            } else if (stack.getType() == material) {
-                availableSpace += material.getMaxStackSize() - stack.getAmount();
+        //Prevent the ArmorStand from being broken
+        @EventHandler
+        public void onEntityDamage (EntityDamageEvent event){
+            if (event.getCause() == DamageCause.ENTITY_ATTACK && event.getEntity() instanceof ArmorStand) {
+                event.setCancelled(true); // Prevent the Armor Stand from taking damage
+                event.getEntity().remove(); // Remove the Armor Stand
             }
         }
-        return availableSpace;
+
+        //calculate available space in an inventory for a specific material
+        private int calculateAvailableSpace (Inventory inventory, Material material){
+            int availableSpace = 0;
+            for (ItemStack stack : inventory.getContents()) {
+                if (stack == null || stack.getType() == Material.AIR) {
+                    availableSpace += material.getMaxStackSize();
+                } else if (stack.getType() == material) {
+                    availableSpace += material.getMaxStackSize() - stack.getAmount();
+                }
+            }
+            return availableSpace;
+        }
     }
-}
