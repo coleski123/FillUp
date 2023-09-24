@@ -123,7 +123,6 @@ public final class FillUp extends JavaPlugin implements Listener {
                         // Create the item stack
                         ItemStack itemStack = new ItemStack(material, actualAmount);
                         chestInventory.addItem(itemStack);
-                        if (shouldDisplayChatMessages) {
                             if (actualAmount < amount) {
                                 String originalAmount2 = String.valueOf(amount);
                                 chatMessages.ChatMessage2(material, ContainerName, originalAmount, originalAmount2, player);
@@ -134,7 +133,6 @@ public final class FillUp extends JavaPlugin implements Listener {
                                 particalEffects.fireworkFunc(player);
                                 playerSounds.SuccessSound(player);
                             }
-                        }
                         playerSounds.SuccessSound(player);
                         if (actualAmount < amount) {
                             String originalAmount2 = String.valueOf(amount);
@@ -145,21 +143,16 @@ public final class FillUp extends JavaPlugin implements Listener {
                             particalEffects.fireworkFunc(player);
                         }
                     } else {
-                        if (shouldDisplayChatMessages) {
-                            chatMessages.ChatMessage3(ContainerName, player);
-                            playerSounds.FailureSound(player);
-                            }
+                        chatMessages.ChatMessage3(ContainerName, player);
+                        playerSounds.FailureSound(player);
                         containerHolograms.displayContainerMessage3(player, prefix, ContainerName, targetBlock);
                         playerSounds.FailureSound(player);
                     }
                 } else {
-                    if (shouldDisplayChatMessages) {
                         chatMessages.ChatMessage4(player);
                         playerSounds.FailureSound(player);
-                    } else {
                         containerHolograms.displayContainerScreenMessage4(player, prefix);
                         playerSounds.FailureSound(player);
-                    }
                 }
                 return true;
             }
