@@ -3,6 +3,7 @@ Prefix: "&5[FillUp] "
 Options:
   ChatMessages: true #Enable or Disable chat messages
   ContainerMessages: true #Enable or Disable ContainerMessage(Holographic)
+  PluginSounds: true #Enable or Disable plugin sounds
 Effects:
   DisplayEffects: true #Enable or Disable effects
   EffectColors: #Change effect colors. Supported colors WHITE, SILVER, GRAY, BLACK, RED, MAROON, YELLOW, OLIVE, LIME, GREEN, AQUA, TEAL, BLUE, NAVY, FUCHSIA, PURPLE, ORANGE

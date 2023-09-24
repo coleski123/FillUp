@@ -26,6 +26,9 @@ public final class FillUp extends JavaPlugin implements Listener {
     public void onEnable() {
         getLogger().info("FillUp has been enabled!");
 
+        int pluginId = 19876; // <-- Replace with the id of your plugin!
+        Metrics metrics = new Metrics(this, pluginId);
+
         // Ensure the config.yml file exists and load it
         this.saveDefaultConfig();
         config = getConfig(); // Load the configuration
