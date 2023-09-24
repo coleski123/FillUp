@@ -5,7 +5,6 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,6 +18,9 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public final class FillUp extends JavaPlugin implements Listener {
     private ContainerHolograms containerHolograms;
+    private ParticalEffects particalEffects;
+    private ChatMessages chatMessages;
+    private Sounds playerSounds;
 
     @Override
     public void onEnable() {
@@ -29,8 +31,15 @@ public final class FillUp extends JavaPlugin implements Listener {
         config = getConfig(); // Load the configuration
 
         getServer().getPluginManager().registerEvents(this, this);
+
         // Initialize the ContainerHolograms instance with the plugin
         containerHolograms = new ContainerHolograms(this);
+
+        particalEffects = new ParticalEffects(this);
+
+        chatMessages = new ChatMessages(this);
+
+        playerSounds = new Sounds(this);
 
         new UpdateChecker(this, 112726).getVersion(version -> {
             if (this.getDescription().getVersion().equals(version)) {
@@ -44,7 +53,6 @@ public final class FillUp extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         getLogger().info("FillUp has been disabled!");
-        // Delete all holograms created by this plugin
     }
 
     // Load the plugins configuration
@@ -54,7 +62,6 @@ public final class FillUp extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         String prefix = config.getString("Prefix").replace('&', '§');
-        String message4 = config.getString("ContainerMessages.Message4").replace("&", "§");
         boolean shouldDisplayChatMessages = config.getBoolean("Options.ChatMessages", true);
 
         if (cmd.getName().equalsIgnoreCase("fillup") && sender instanceof Player) {
@@ -62,13 +69,8 @@ public final class FillUp extends JavaPlugin implements Listener {
 
             // Check if the player has the "fillup.use" permission
             if (!player.hasPermission("fillup.use")) {
-                    String message5 = config.getString("ChatMessages.Message5")
-                            .replace("&", "§");
-                    player.sendMessage(prefix + message5);
-                    Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
-                    float volume = 0.10f;
-                    float pitch = 1.0f;
-                    player.playSound(player.getLocation(), sound, volume, pitch);
+                chatMessages.ChatMessage5(player);
+                playerSounds.FailureSound(player);
                     return true;
                 }
 
@@ -76,11 +78,8 @@ public final class FillUp extends JavaPlugin implements Listener {
                     // Handle the "/fillup saveconfig" command here
                     reloadConfig();
                     config = getConfig(); // Get the updated configuration
-                    player.sendMessage(ChatColor.GREEN + "Configuration saved.");
-                    Sound sound = Sound.ENTITY_PLAYER_LEVELUP;
-                    float volume = 0.10f;
-                    float pitch = 1.0f;
-                    player.playSound(player.getLocation(), sound, volume, pitch);
+                    chatMessages.saveConfigMessage(player);
+                    playerSounds.SaveConfigSound(player);
                     return true;
                 }
 
@@ -126,60 +125,41 @@ public final class FillUp extends JavaPlugin implements Listener {
                         ItemStack itemStack = new ItemStack(material, actualAmount);
                         chestInventory.addItem(itemStack);
                         if (shouldDisplayChatMessages) {
-                            String message1 = config.getString("ChatMessages.Message1")
-                                    .replace("&", "§")
-                                    .replace("{ITEM}", material.name().toLowerCase().replace("_", " "))
-                                    .replace("{AMOUNT1}", originalAmount)
-                                    .replace("{CONTAINERNAME}", ContainerName);
                             if (actualAmount < amount) {
                                 String originalAmount2 = String.valueOf(amount);
-                                String message2 = config.getString("ChatMessages.Message2")
-                                        .replace("&", "§")
-                                        .replace("{AMOUNT1}", originalAmount)
-                                        .replace("{AMOUNT2}", originalAmount2)
-                                        .replace("{CONTAINERNAME}", ContainerName)
-                                        .replace("{ITEM}", material.name().toLowerCase().replace("_", " "));
-                                player.sendMessage(prefix + message2);
+                                chatMessages.ChatMessage2(material, ContainerName, originalAmount, originalAmount2, player);
+                                particalEffects.fireworkFunc(player);
+                                playerSounds.SuccessSound(player);
                             } else {
-                                player.sendMessage(prefix + message1);
+                                chatMessages.ChatMessage1(ContainerName, originalAmount, material, player);
+                                particalEffects.fireworkFunc(player);
+                                playerSounds.SuccessSound(player);
                             }
                         }
-                        Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
-                        float volume = 0.10f;
-                        float pitch = 2.0f;
-                        player.playSound(player.getLocation(), sound, volume, pitch);
+                        playerSounds.SuccessSound(player);
                         if (actualAmount < amount) {
                             String originalAmount2 = String.valueOf(amount);
                             containerHolograms.displayContainerMessage2(player, prefix, originalAmount, originalAmount2, ContainerName, material, targetBlock);
+                            particalEffects.fireworkFunc(player);
                         } else {
                             containerHolograms.displayContainerMessage1(player, prefix, originalAmount, ContainerName, material, targetBlock);
+                            particalEffects.fireworkFunc(player);
                         }
                     } else {
                         if (shouldDisplayChatMessages) {
-                                String message3 = config.getString("ChatMessages.Message3")
-                                        .replace("&", "§")
-                                        .replace("{CONTAINERNAME}", ContainerName);
-                                player.sendMessage(prefix + message3);
-                                Sound sounds = Sound.BLOCK_NOTE_BLOCK_BIT;
-                                float volumes = 0.10f;
-                                float pitchs = 1.0f;
-                                player.playSound(player.getLocation(), sounds, volumes, pitchs);
+                            chatMessages.ChatMessage3(ContainerName, player);
+                            playerSounds.FailureSound(player);
                             }
                         containerHolograms.displayContainerMessage3(player, prefix, ContainerName, targetBlock);
-                        Sound sounds = Sound.BLOCK_NOTE_BLOCK_BIT;
-                        float volumes = 0.10f;
-                        float pitchs = 1.0f;
-                        player.playSound(player.getLocation(), sounds, volumes, pitchs);
+                        playerSounds.FailureSound(player);
                     }
                 } else {
                     if (shouldDisplayChatMessages) {
-                        player.sendMessage(prefix + message4);
-                        Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
-                        float volume = 0.10f;
-                        float pitch = 1.0f;
-                        player.playSound(player.getLocation(), sound, volume, pitch);
+                        chatMessages.ChatMessage4(player);
+                        playerSounds.FailureSound(player);
                     } else {
                         containerHolograms.displayContainerScreenMessage4(player, prefix);
+                        playerSounds.FailureSound(player);
                     }
                 }
                 return true;

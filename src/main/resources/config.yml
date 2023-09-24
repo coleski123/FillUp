@@ -1,0 +1,22 @@
+#Plugin prefix to display alongside ChatMessages or ContainerMessages
+Prefix: "&5[FillUp] "
+Options:
+  ChatMessages: true #Enable or Disable chat messages
+  ContainerMessages: true #Enable or Disable ContainerMessage(Holographic)
+Effects:
+  DisplayEffects: true #Enable or Disable effects
+  EffectColors: #Change effect colors. Supported colors WHITE, SILVER, GRAY, BLACK, RED, MAROON, YELLOW, OLIVE, LIME, GREEN, AQUA, TEAL, BLUE, NAVY, FUCHSIA, PURPLE, ORANGE
+    - RED
+    - WHITE
+    - BLUE
+ChatMessages: #Make sure to leave {CONTAINERNAME}, {AMOUNT1}, {AMOUNT2} and {ITEM} in your custom message
+  Message1: "&6{CONTAINERNAME} filled with {AMOUNT1} {ITEM}"
+  Message2: "&6Only {AMOUNT1} out of {AMOUNT2} {ITEM} could fit in the {CONTAINERNAME}."
+  Message3: "&4The {CONTAINERNAME} does not have enough space for these items."
+  Message4: "&4You must be looking at a container to use this command."
+  Message5: "&4You do not have permission to use this command!"
+ContainerMessages: #Make sure to leave {CONTAINERNAME}, {AMOUNT1}, {AMOUNT2} and {ITEM} in your custom message
+  Message1: "&6{CONTAINERNAME} filled with {AMOUNT1} {ITEM}"
+  Message2: "&6Only {AMOUNT1} out of {AMOUNT2} {ITEM} could fit in the {CONTAINERNAME}."
+  Message3: "&4The {CONTAINERNAME} does not have enough space for these items."
+  Message4: "&4You must be looking at a container to use this command."

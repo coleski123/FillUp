@@ -17,25 +17,24 @@ public class ContainerHolograms {
 
     public void displayContainerMessage1(Player player, String prefix, String originalAmount, String ContainerName, Material material, Block targetBlock) {
         boolean shouldDisplayContainerMessages = plugin.getConfig().getBoolean("Options.ContainerMessages", true);
-
         if (shouldDisplayContainerMessages) {
             String containerMSG1 = plugin.getConfig().getString("ContainerMessages.Message1");
+
             // Display the message above the container "targetBlock"
             String message = prefix + containerMSG1;
             message = message.replace("{AMOUNT1}", originalAmount)
                     .replace("{ITEM}", material.name().toLowerCase().replace("_", " "))
                     .replace("{CONTAINERNAME}", ContainerName)
                     .replace("&", "§");
-
             hologramPlacement(player, message, targetBlock);
         }
     }
 
     public void displayContainerMessage2(Player player, String prefix, String originalAmount, String originalAmount2, String ContainerName, Material material, Block targetBlock) {
         boolean shouldDisplayContainerMessages = plugin.getConfig().getBoolean("Options.ContainerMessages", true);
-
             if (shouldDisplayContainerMessages) {
                 String containerMSG1 = plugin.getConfig().getString("ContainerMessages.Message2");
+
                 // Display the message above the container "targetBlock"
                 String message2 = prefix + containerMSG1;
                 message2 = message2.replace("{AMOUNT1}", originalAmount)
@@ -43,34 +42,31 @@ public class ContainerHolograms {
                         .replace("{ITEM}", material.name().toLowerCase().replace("_", " "))
                         .replace("{CONTAINERNAME}", ContainerName)
                         .replace("&", "§");
-
                 hologramPlacement(player, message2, targetBlock);
             }
     }
 
     public void displayContainerMessage3(Player player, String prefix, String ContainerName, Block targetBlock) {
         boolean shouldDisplayContainerMessages = plugin.getConfig().getBoolean("Options.ContainerMessages", true);
-
         if (shouldDisplayContainerMessages) {
             String containerMSG1 = plugin.getConfig().getString("ContainerMessages.Message3");
+
             // Display the message above the container "targetBlock"
             String message2 = prefix + containerMSG1;
             message2 = message2.replace("&", "§")
                     .replace("{CONTAINERNAME}", ContainerName);
-
             hologramPlacement(player, message2, targetBlock);
         }
     }
 
     public void displayContainerScreenMessage4(Player player, String prefix) {
         boolean shouldDisplayContainerMessages = plugin.getConfig().getBoolean("Options.ContainerMessages", true);
-
         if (shouldDisplayContainerMessages) {
             String containerMSG1 = plugin.getConfig().getString("ContainerMessages.Message4");
+
             // Display the message above the container "targetBlock"
             String message2 = prefix + containerMSG1;
             message2 = message2.replace("&", "§");
-
             player.sendTitle("", message2, 10, 70, 20);
         }
     }
@@ -78,7 +74,6 @@ public class ContainerHolograms {
     public void hologramPlacement(Player player, String text, Block targetBlock) {
         Location chestLocation = targetBlock.getLocation().add(0.5, 0.5, 0.5); // Center of the chest
         Location hologramLocation = chestLocation.clone().add(0, 1.0, 0); // Offset it slightly above the chest
-
         ArmorStand armorStand = (ArmorStand) player.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
 
         // Customize the Armor Stand
