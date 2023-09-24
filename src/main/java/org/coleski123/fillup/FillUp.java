@@ -58,7 +58,6 @@ public final class FillUp extends JavaPlugin implements Listener {
     // Load the plugins configuration
     FileConfiguration config = getConfig();
 
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         String prefix = config.getString("Prefix").replace('&', '§');
@@ -85,7 +84,7 @@ public final class FillUp extends JavaPlugin implements Listener {
 
                 // Check if the player specified a valid material and amount
                 if (args.length < 2) {
-                    player.sendMessage(ChatColor.RED + "Usage: /fillup <item_name> <amount>");
+                    chatMessages.usageMessage(player);
                     return true;
                 }
 
@@ -95,14 +94,14 @@ public final class FillUp extends JavaPlugin implements Listener {
                 try {
                     material = Material.valueOf(args[0].toUpperCase()); // Convert the item name to uppercase
                 } catch (IllegalArgumentException e) {
-                    player.sendMessage(ChatColor.RED + "Invalid item name.");
+                    chatMessages.invalidItemName(player);
                     return true;
                 }
 
                 try {
                     amount = Integer.parseInt(args[1]);
                 } catch (NumberFormatException e) {
-                    player.sendMessage(ChatColor.RED + "Invalid amount.");
+                    chatMessages.invalidAmount(player);
                     return true;
                 }
 

@@ -29,6 +29,4 @@ public class Sounds {
         float pitch = 1.0f;
         player.playSound(player.getLocation(), sound, volume, pitch);
     }
-
-
 }

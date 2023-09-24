@@ -68,4 +68,20 @@ public class ChatMessages {
         String prefix = plugin.config.getString("Prefix").replace('&', '§');
         player.sendMessage(prefix + ChatColor.GREEN + "Configuration saved.");
     }
+
+    public void usageMessage(Player player){
+        String prefix = plugin.config.getString("Prefix").replace('&', '§');
+        player.sendMessage(prefix + ChatColor.RED + "Usage: /fillup <item_name> <amount>");
+    }
+
+    public void invalidItemName(Player player){
+        String prefix = plugin.config.getString("Prefix").replace('&', '§');
+        player.sendMessage(prefix + ChatColor.RED + "Invalid item name.");
+    }
+
+    public void invalidAmount(Player player){
+        String prefix = plugin.config.getString("Prefix").replace('&', '§');
+        player.sendMessage(prefix + ChatColor.RED + "Invalid amount.");
+    }
+
 }

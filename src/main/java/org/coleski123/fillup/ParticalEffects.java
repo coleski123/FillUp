@@ -14,13 +14,11 @@ public class ParticalEffects {
         this.plugin = plugin;
     }
 
-
         public void fireworkFunc(Player player) {
 
             //Get the boolean for Effects
             boolean shoulduseEffects = plugin.config.getBoolean("Effects.DisplayEffects", true);
             List<String> effectColors = plugin.config.getStringList("Effects.EffectColors");
-
 
             //Check if enabled/disabled
             if (shoulduseEffects) {
@@ -96,6 +94,4 @@ public class ParticalEffects {
         // Default to RED if the color name is not found
         return Color.RED;
     }
-
-
 }
