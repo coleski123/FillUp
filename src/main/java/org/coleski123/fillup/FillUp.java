@@ -24,7 +24,8 @@ public final class FillUp extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        getLogger().info("FillUp has been enabled!");
+        String pluginConsolePrefix = ChatColor.DARK_PURPLE + "[FillUp]";
+        sendConsoleMessage(pluginConsolePrefix + ChatColor.GREEN + " FillUp has been enabled!");
 
         int pluginId = 19876; // <-- Replace with the id of your plugin!
         Metrics metrics = new Metrics(this, pluginId);
@@ -46,16 +47,17 @@ public final class FillUp extends JavaPlugin implements Listener {
 
         new UpdateChecker(this, 112726).getVersion(version -> {
             if (this.getDescription().getVersion().equals(version)) {
-                getLogger().info("No new versions available.");
+                sendConsoleMessage(pluginConsolePrefix + ChatColor.GREEN + " No new versions available.");
             } else {
-                getLogger().info("A new version is now available! Download: https://www.spigotmc.org/resources/instasmelt.112726//");
+                sendConsoleMessage(pluginConsolePrefix + ChatColor.RED + " A new version is now available! Download: https://www.spigotmc.org/resources/instasmelt.112726//");
             }
         });
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("FillUp has been disabled!");
+        String pluginPrefix = ChatColor.DARK_PURPLE + "[FillUp]";
+        sendConsoleMessage(pluginPrefix + ChatColor.RED + " FillUp has been disabled!");
     }
 
     // Load the plugins configuration
@@ -64,7 +66,6 @@ public final class FillUp extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         String prefix = config.getString("Prefix").replace('&', '§');
-        boolean shouldDisplayChatMessages = config.getBoolean("Options.ChatMessages", true);
 
         if (cmd.getName().equalsIgnoreCase("fillup") && sender instanceof Player) {
             Player player = (Player) sender;
@@ -167,7 +168,7 @@ public final class FillUp extends JavaPlugin implements Listener {
         public void onPlayerInteract (PlayerInteractEvent event){
         }
 
-        //Prevent the ArmorStand from being broken
+    //Prevent the ArmorStand from being broken
         @EventHandler
         public void onEntityDamage (EntityDamageEvent event){
             if (event.getCause() == DamageCause.ENTITY_ATTACK && event.getEntity() instanceof ArmorStand) {
@@ -187,5 +188,9 @@ public final class FillUp extends JavaPlugin implements Listener {
                 }
             }
             return availableSpace;
+        }
+
+        private void sendConsoleMessage(String message) {
+            getServer().getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', message));
         }
     }

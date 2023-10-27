@@ -21,3 +21,8 @@ ContainerMessages: #Make sure to leave {CONTAINERNAME}, {AMOUNT1}, {AMOUNT2} and
   Message2: "&6Only {AMOUNT1} out of {AMOUNT2} {ITEM} could fit in the {CONTAINERNAME}."
   Message3: "&4The {CONTAINERNAME} does not have enough space for these items."
   Message4: "&4You must be looking at a container to use this command."
+
+
+
+
+
