@@ -9,9 +9,12 @@ public class Sounds {
         this.plugin = plugin;
     }
 
+    public boolean PluginSounds(){
+        return plugin.getConfig().getBoolean("Options.PluginSounds");
+    }
+
     public void SuccessSound(Player player) {
-        boolean pluginSounds = plugin.getConfig().getBoolean("Options.PluginSounds");
-        if (pluginSounds) {
+        if (PluginSounds()) {
             Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
             float volume = 0.10f;
             float pitch = 2.0f;
@@ -20,8 +23,7 @@ public class Sounds {
     }
 
     public void FailureSound(Player player) {
-        boolean pluginSounds = plugin.getConfig().getBoolean("Options.PluginSounds");
-        if (pluginSounds) {
+        if (PluginSounds()) {
             Sound sound = Sound.BLOCK_NOTE_BLOCK_BIT;
             float volume = 0.10f;
             float pitch = 1.0f;
@@ -30,8 +32,7 @@ public class Sounds {
     }
 
     public void SaveConfigSound(Player player) {
-        boolean pluginSounds = plugin.getConfig().getBoolean("Options.PluginSounds");
-        if (pluginSounds) {
+        if (PluginSounds()) {
             Sound sound = Sound.ENTITY_PLAYER_LEVELUP;
             float volume = 0.10f;
             float pitch = 1.0f;

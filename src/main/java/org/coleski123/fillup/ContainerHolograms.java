@@ -15,9 +15,12 @@ public class ContainerHolograms {
         this.plugin = plugin;
     }
 
+    public Boolean DisplayContainerMessages(){
+        return plugin.getConfig().getBoolean("Options.ContainerMessages", true);
+    }
+
     public void displayContainerMessage1(Player player, String prefix, String originalAmount, String ContainerName, Material material, Block targetBlock) {
-        boolean shouldDisplayContainerMessages = plugin.getConfig().getBoolean("Options.ContainerMessages", true);
-        if (shouldDisplayContainerMessages) {
+        if (DisplayContainerMessages()) {
             String containerMSG1 = plugin.getConfig().getString("ContainerMessages.Message1");
 
             // Display the message above the container "targetBlock"
@@ -31,8 +34,7 @@ public class ContainerHolograms {
     }
 
     public void displayContainerMessage2(Player player, String prefix, String originalAmount, String originalAmount2, String ContainerName, Material material, Block targetBlock) {
-        boolean shouldDisplayContainerMessages = plugin.getConfig().getBoolean("Options.ContainerMessages", true);
-            if (shouldDisplayContainerMessages) {
+            if (DisplayContainerMessages()) {
                 String containerMSG1 = plugin.getConfig().getString("ContainerMessages.Message2");
 
                 // Display the message above the container "targetBlock"
@@ -47,8 +49,7 @@ public class ContainerHolograms {
     }
 
     public void displayContainerMessage3(Player player, String prefix, String ContainerName, Block targetBlock) {
-        boolean shouldDisplayContainerMessages = plugin.getConfig().getBoolean("Options.ContainerMessages", true);
-        if (shouldDisplayContainerMessages) {
+        if (DisplayContainerMessages()) {
             String containerMSG1 = plugin.getConfig().getString("ContainerMessages.Message3");
 
             // Display the message above the container "targetBlock"
@@ -60,8 +61,7 @@ public class ContainerHolograms {
     }
 
     public void displayContainerScreenMessage4(Player player, String prefix) {
-        boolean shouldDisplayContainerMessages = plugin.getConfig().getBoolean("Options.ContainerMessages", true);
-        if (shouldDisplayContainerMessages) {
+        if (DisplayContainerMessages()) {
             String containerMSG1 = plugin.getConfig().getString("ContainerMessages.Message4");
 
             // Display the message above the container "targetBlock"

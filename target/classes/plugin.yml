@@ -1,5 +1,5 @@
 name: FillUp
-version: 0.8
+version: 0.9
 main: org.coleski123.fillup.FillUp
 api-version: '1.20'
 description: A plugin allowing owners/admins to fill containers with a simple command
